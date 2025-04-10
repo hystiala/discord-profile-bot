@@ -30,7 +30,7 @@ jobs:
       - name: Run bot script
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_USER_ID: 1025536714590146601
+          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
         run: node index.js
 
       - name: Commit and push avatar URL

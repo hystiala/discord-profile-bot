@@ -1,0 +1,20 @@
+# .github/workflows/dispatch-fetch.yml
+name: Schedule Fetch Avatar
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'    # Every 20 minutes (UTC)
+  workflow_dispatch:         # Allow manual testing
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Fetch Avatar workflow
+        uses: peter-evans/workflow-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          workflow: fetch-avatar.yml
+          ref: main

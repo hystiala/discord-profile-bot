@@ -2,33 +2,36 @@ name: Update Avatar Every 10 Minutes
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # Runs every 10 minutes
-  workflow_dispatch:  # Allows manual trigger
+    - cron: '*/10 * * * *'    # every 10 minutes
+  workflow_dispatch:         # manual trigger
 
 jobs:
   fetch-avatar:
     runs-on: ubuntu-latest
 
     steps:
+      # 1) Grab your repository
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      # 2) Install the right Node.js version
+      - name: Set up Node.js 18
         uses: actions/setup-node@v2
         with:
-          node-version: '18'  # Make sure to use Node.js v18+ to be compatible with Discord.js v14+
+          node-version: '18'
 
+      # 3) Install your NPM dependencies (discord.js & dotenv)
       - name: Install dependencies
-        run: |
-          npm install discord.js dotenv node-fetch  # Install node-fetch as well
+        run: npm install discord.js dotenv
 
+      # 4) Run the bot to fetch & write avatar.txt
       - name: Run bot script
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}  # Pass the user ID as a secret
-        run: |
-          node index.js
+          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
+        run: node index.js
 
+      # 5) Commit and push the updated avatar.txt back to GitHub
       - name: Commit and push avatar URL
         run: |
           git config --global user.name 'github-actions'

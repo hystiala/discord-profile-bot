@@ -1,31 +1,28 @@
-// index.js
-const { Client, Intents } = require('discord.js');
-const fs = require('fs');
-require('dotenv').config();
+const { Client, GatewayIntentBits } = require('discord.js');
+const fetch = require('node-fetch');  // Required for making HTTP requests to Discord's API
 
-// Create a new Discord client
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-
-client.once('ready', async () => {
-    console.log('Logged in as ' + client.user.tag);
-
-    // Replace with the actual Discord user ID you want to get the avatar for
-    const userId = process.env.DISCORD_USER_ID;
-
-    try {
-        const user = await client.users.fetch(userId);
-        const avatarUrl = user.displayAvatarURL({ size: 1024 });
-
-        console.log('Avatar URL:', avatarUrl);
-
-        // Save the avatar URL to a file
-        fs.writeFileSync('avatar.txt', avatarUrl);
-
-        console.log('Avatar URL has been saved to avatar.txt');
-    } catch (error) {
-        console.error('Error fetching avatar:', error);
-    }
+// Your bot's token and the user ID
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds],  // Correct intent for Discord.js v14+
 });
 
-// Login using the Discord bot token
-client.login(process.env.DISCORD_BOT_TOKEN);
+client.once('ready', async () => {
+  console.log('Bot is online!');
+
+  try {
+    // Fetch the user profile
+    const user = await client.users.fetch(process.env.DISCORD_USER_ID);  // Fetch the user using the ID
+    const avatarUrl = user.displayAvatarURL({ format: 'png', size: 1024 });  // Fetch the avatar URL
+
+    console.log('User Avatar URL:', avatarUrl);
+
+    // Here you can store or update the avatar URL to a file or do other actions
+    // For example, write it to a file for GitHub actions to pick up
+    const fs = require('fs');
+    fs.writeFileSync('avatar.txt', avatarUrl);  // Save avatar URL to a text file
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+  }
+});
+
+client.login(process.env.DISCORD_BOT_TOKEN);  // Use the bot's token from the environment variable

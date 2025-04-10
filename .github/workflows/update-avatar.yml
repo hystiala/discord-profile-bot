@@ -1,13 +1,11 @@
-name: Update Avatar Every 20 Minutes
+# .github/workflows/fetch-avatar.yml
+name: Fetch Avatar
 
-# Grant write permission so the workflow can push commits
 permissions:
   contents: write
 
 on:
-  schedule:
-    - cron: '*/20 * * * *'    # Runs every 20 minutes
-  workflow_dispatch:         # Allows manual trigger
+  workflow_dispatch:         # Only run when explicitly dispatched
 
 jobs:
   fetch-avatar:
@@ -17,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          persist-credentials: true  # ensures the GITHUB_TOKEN is used for pushes
+          persist-credentials: true
 
       - name: Set up Node.js 18
         uses: actions/setup-node@v2

@@ -16,10 +16,11 @@ client.once('ready', async () => {
 
   console.log('Avatar URL:', avatarUrl);
 
-  // Save to file
+  // Save the avatar URL to a file called avatar.txt
   fs.writeFileSync('avatar.txt', avatarUrl);
 
-  process.exit(); // Exit after saving
+  // Exit the process to prevent it from running endlessly
+  process.exit();
 });
 
 client.login(token);

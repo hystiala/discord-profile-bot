@@ -22,6 +22,8 @@ jobs:
         npm install discord.js
 
     - name: Run the bot script
+      env:
+        DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}  # Use the secret here!
       run: |
         node index.js
 

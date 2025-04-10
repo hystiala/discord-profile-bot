@@ -1,20 +1,26 @@
-# .github/workflows/dispatch-fetch.yml
-name: Schedule Fetch Avatar
+# .github/workflows/dispatch-update.yml
+name: Schedule Update Avatar
+
+permissions:
+  contents: read        # only reading repo here
+  actions: write        # to dispatch another workflow
 
 on:
   schedule:
-    - cron: '*/20 * * * *'    # Every 20 minutes (UTC)
-  workflow_dispatch:         # Allow manual testing
+    - cron: '*/20 * * * *'    # every 20 minutes (UTC)
+  workflow_dispatch:         # allow manual testing
 
 jobs:
   dispatch:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger Fetch Avatar workflow
-        uses: peter-evans/workflow-dispatch@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          workflow: fetch-avatar.yml
-          ref: main
+      - name: Dispatch Update Avatar workflow via REST API
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/update-avatar.yml/dispatches \
+            -d '{"ref":"main"}'

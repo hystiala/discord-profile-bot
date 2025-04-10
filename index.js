@@ -1,26 +1,31 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+// index.js
+const { Client, Intents } = require('discord.js');
 const fs = require('fs');
+require('dotenv').config();
 
-const client = new Client({ intents: [] });  // No intents needed!
-
-// Use GitHub secret for the bot token
-const token = process.env.DISCORD_BOT_TOKEN;  // Fetches token from GitHub Secrets
-const userId = '1025536714590146601'; // Your friend's Discord ID
+// Create a new Discord client
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.once('ready', async () => {
-  console.log('Bot is online!');
+    console.log('Logged in as ' + client.user.tag);
 
-  const user = await client.users.fetch(userId);
+    // Replace with the actual Discord user ID you want to get the avatar for
+    const userId = process.env.DISCORD_USER_ID;
 
-  const avatarUrl = user.displayAvatarURL({ format: 'png', size: 1024 });
+    try {
+        const user = await client.users.fetch(userId);
+        const avatarUrl = user.displayAvatarURL({ size: 1024 });
 
-  console.log('Avatar URL:', avatarUrl);
+        console.log('Avatar URL:', avatarUrl);
 
-  // Save the avatar URL to a file called avatar.txt
-  fs.writeFileSync('avatar.txt', avatarUrl);
+        // Save the avatar URL to a file
+        fs.writeFileSync('avatar.txt', avatarUrl);
 
-  // Exit the process to prevent it from running endlessly
-  process.exit();
+        console.log('Avatar URL has been saved to avatar.txt');
+    } catch (error) {
+        console.error('Error fetching avatar:', error);
+    }
 });
 
-client.login(token);
+// Login using the Discord bot token
+client.login(process.env.DISCORD_BOT_TOKEN);

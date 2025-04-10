@@ -1,41 +1,42 @@
 name: Update Avatar Every 10 Minutes
 
+# Grant write permission so the workflow can push commits
+permissions:
+  contents: write
+
 on:
   schedule:
-    - cron: '*/10 * * * *'    # every 10 minutes
-  workflow_dispatch:         # manual trigger
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
 
 jobs:
   fetch-avatar:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Grab your repository
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          persist-credentials: true  # ensures the GITHUB_TOKEN is used for pushes
 
-      # 2) Install the right Node.js version
       - name: Set up Node.js 18
         uses: actions/setup-node@v2
         with:
           node-version: '18'
 
-      # 3) Install your NPM dependencies (discord.js & dotenv)
       - name: Install dependencies
         run: npm install discord.js dotenv
 
-      # 4) Run the bot to fetch & write avatar.txt
       - name: Run bot script
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
+          DISCORD_USER_ID: 1025536714590146601
         run: node index.js
 
-      # 5) Commit and push the updated avatar.txt back to GitHub
       - name: Commit and push avatar URL
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add avatar.txt
-          git commit -m "Update avatar URL"
+          git commit -m "Update avatar URL" || echo "No changes to commit"
           git push

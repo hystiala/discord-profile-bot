@@ -1,11 +1,11 @@
-# .github/workflows/fetch-avatar.yml
-name: Fetch Avatar
+# .github/workflows/update-avatar.yml
+name: Update Avatar
 
 permissions:
   contents: write
 
 on:
-  workflow_dispatch:         # Only run when explicitly dispatched
+  workflow_dispatch:         # Only runs when explicitly dispatched
 
 jobs:
   fetch-avatar:
